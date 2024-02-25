@@ -6,7 +6,7 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
 
-classifier = Classifier("weights/n5.pt")
+classifier = Classifier("ml/weights/n5.pt")
 
 classify = False
 
