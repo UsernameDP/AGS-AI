@@ -169,12 +169,6 @@ objectCategory = {
 }
 
 
-class CVObject:
-    def __init__(self, id):
-        self.name = objectName[id]
-        self.category = objectCategory[id]
-
-
 class ModelTrainer:
     def __init__(self, path="yolov8n.yaml"):
         self.model = YOLO(path)  # build a new model from scratch
@@ -196,12 +190,6 @@ class Classifier:
 
     def processImage(self, path):
         self.result = self.model.predict(path)[0]
-
-    def createObjects(self):
-        self.objects = []
-        for box in self.result.boxes:
-            id = int(box.cls[0].item())
-            self.objects.append(CVObject(id))
 
     def displayImage(self):
         Image.fromarray(self.result.plot()[:, :, ::-1]).show()

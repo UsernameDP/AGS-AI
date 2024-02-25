@@ -8,7 +8,7 @@ cap.set(4, 480)
 
 classifier = Classifier("ml/weights/n5.pt")
 
-classify = False
+classify = True
 
 while True:
     success, img = cap.read()
@@ -54,11 +54,6 @@ while True:
     cv2.imshow("Webcam", img)
     if cv2.waitKey(1) == ord("q"):
         break
-    if cv2.waitKey(1) == ord("c"):
-        classify = True
-    else:
-        classify = False
-    print(ord("c"))
 
 
 cap.release()

@@ -1,8 +1,8 @@
+from backend import *
 import cv2
 import numpy as np
 from djitellopy import tello
 import time
-from backend import *
 import math
 import logging
 
@@ -11,7 +11,9 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 # Set the logging level (optional)
-logging.basicConfig(level=logging.CRITICAL)  # This effectively silences most logging, adjust as needed
+logging.basicConfig(
+    level=logging.CRITICAL
+)  # This effectively silences most logging, adjust as needed
 
 me = tello.Tello()
 me.connect()
@@ -27,14 +29,18 @@ w, h = 640, 480
 fbRange = [6200, 6800]
 pid = [0.4, 0.4, 0]
 pError = 0
+
+
 def findFace(img):
-    faceCascade= cv2.CascadeClassifier("C:/Users/Ericc/.vscode/HackTJ2024/H/N/venv/data/haarcascade_frontalface_default.xml")
+    faceCascade = cv2.CascadeClassifier(
+        "C:/Users/Ericc/.vscode/HackTJ2024/H/N/venv/data/haarcascade_frontalface_default.xml"
+    )
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(imgGray, 1.2, 8)
     myFaceListC = []
     myFaceListArea = []
 
-    for (x, y, w, h) in faces:
+    for x, y, w, h in faces:
 
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
         cx = x + w // 2
@@ -50,7 +56,8 @@ def findFace(img):
     else:
         return img, [[0, 0], 0]
 
-def trackFace( info, w, pid, pError):
+
+def trackFace(info, w, pid, pError):
     area = info[1]
     x, y = info[0]
     fb = 0
@@ -66,26 +73,27 @@ def trackFace( info, w, pid, pError):
     if x == 0:
         speed = 0
         error = 0
-    #print(speed, fb)
+    # print(speed, fb)
     me.send_rc_control(0, fb, 0, speed)
     return error
 
-#cap = cv2.VideoCapture(1)
+
+# cap = cv2.VideoCapture(1)
 
 # Classification Init
 classifier = Classifier("ml/weights/n5.pt")
-classify = False
+classify = True
 
 # me.send_rc_control(0, 0, 0, 0)
 
 while True:
 
-    #_, img = cap.read()
+    # _, img = cap.read()
     img = me.get_frame_read().frame
     img = cv2.resize(img, (w, h))
     img, info = findFace(img)
-    pError = trackFace( info, w, pid, pError)
-    #print(“Center”, info[0], “Area”, info[1])
+    pError = trackFace(info, w, pid, pError)
+    # print(“Center”, info[0], “Area”, info[1])
 
     results = classifier.model.predict(img, stream=True)
     # coordinates
@@ -127,6 +135,6 @@ while True:
 
     cv2.imshow("SS-Corp Tetravaal", img)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         me.land()
         break
