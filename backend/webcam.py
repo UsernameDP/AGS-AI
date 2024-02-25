@@ -8,7 +8,7 @@ cap.set(4, 480)
 
 classifier = Classifier("ml/weights/n5.pt")
 
-classify = False
+classify = True
 
 while True:
     success, img = cap.read()
